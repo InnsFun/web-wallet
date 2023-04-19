@@ -54,7 +54,7 @@
     "node": ">=16.0.0",
     "npm": ">=8.0.0"
   },
-  "name": "@inns/wallet",
+  "name": "@inns/web-wallet",
   "private": true,
   "scripts": {
     "build": "run-p type-check build-only",
