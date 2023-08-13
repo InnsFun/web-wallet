@@ -55,6 +55,7 @@
     "npm": ">=8.0.0"
   },
   "name": "@inns/web-wallet",
+  "version": "0.1.1",
   "private": true,
   "scripts": {
     "build": "run-p type-check build-only",
@@ -65,6 +66,5 @@
     "prepare": "node prepare.js",
     "preview": "vite preview --port 4173",
     "type-check": "vue-tsc --noEmit"
-  },
-  "version": "0.4.3"
+  }
 }

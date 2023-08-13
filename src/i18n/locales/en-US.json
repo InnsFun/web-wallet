@@ -11,7 +11,8 @@
         "portfolio": "Portfolio",
         "mint": "Mint",
         "keplr": "Keprl Wallet",
-        "inns": "Inns Wallet"
+        "inns": "Inns Wallet",
+        "info":"Unstake needs Waiting for 30 days"
     },
     "account": {
         "create_new_account": "Create new account",
@@ -60,7 +61,12 @@
         "average":"Average",
         "high":"High",
         "add":"Add",
-        "transaction":"Transaction"
+        "transaction":"Transaction",
+        "stake":"Stake",
+        "unstake":"UNStake",
+        "operator":"OperatorAddress",
+        "withdraw":"Withdraw Rewards",
+        "rewards":"Rewards"
     }
 
 }

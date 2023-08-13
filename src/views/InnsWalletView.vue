@@ -188,6 +188,10 @@
                 </div>
             </div>
             <button @click="setIndex(SEND)" class="btn btn-outline mt-20 " style="width: 90%; margin-left: 5%;" >{{$t('account.send')}}</button>
+            <button @click="setIndex(STAKE)" class="btn btn-outline mt-5 " style="width: 90%; margin-left: 5%;" >{{$t('account.stake')}}</button>
+            <button @click="setIndex(UNSTAKE)" class="btn btn-outline mt-5 " style="width: 90%; margin-left: 5%;" >{{$t('account.unstake')}}</button>
+            <button @click="setIndex(WITHDRAW);loadRewards(state.currentAddress)" class="btn btn-outline mt-5 " style="width: 90%; margin-left: 5%;" >{{$t('account.withdraw')}}</button>
+
         </div>
         <!-- send  -->
         <div v-if="state.dialogIndex == SEND"  class="w-96 pt-16">
@@ -226,6 +230,88 @@
                 </div>
             </div>
         </div>
+        <!-- stake/unstake  -->
+        <div v-if="state.dialogIndex == STAKE || state.dialogIndex == UNSTAKE"  class="w-96 pt-16">
+            <div class="w-full text-center  pt-8 pb-4 text-xl font-bold">{{ $t('navbar.title') }}</div>
+            <div  v-if="state.dialogIndex == UNSTAKE" class="w-full text-center  pb-4 text-sm text-red-500">{{ $t('navbar.info') }}</div>
+
+            <div class="w-full pl-8 pt-4 pb-2 text-lg font-bold">{{ $t('account.operator') }}</div>
+            <input v-model="state.operatorAddress"  style="outline: none;" type="text" paceholder="" class="input input-bordered width-90" />
+            <div class="w-full pl-8 pt-4 pb-2 text-lg font-bold">{{ $t('account.amount') }}</div>
+            <input v-model="state.sendAmount"  style="outline: none;" type="number" paceholder="" class="input input-bordered width-90" />
+            <div class="w-full pl-8 pt-4 pb-2 text-lg font-bold">{{ $t('account.memo') }}</div>
+            <input v-model="state.sendMemo"  style="outline: none;" type="text" paceholder="" class="input input-bordered width-90" />    
+            <div class="w-full pl-8 pt-4 pb-2 text-lg font-bold">{{ $t('account.fee') }}</div>
+            <div class="width-90 btn-group">
+                <button @click="setFee(LOW_FEE)" :class="state.sendFee == LOW_FEE ? 'btn-active':''" class="btn w-1/3">
+                    <label class="normal-case">{{$t('account.low')}}</label>
+                    <label class="normal-case">{{LOW_FEE}}uinns</label>
+                </button>
+                <button @click="setFee(MIDDLE_FEE)" :class="state.sendFee == MIDDLE_FEE ? 'btn-active':''" class="btn w-1/3">
+                    <label class="normal-case">{{$t('account.average')}}</label>
+                    <label class="normal-case">{{MIDDLE_FEE}}uinns</label>
+                </button>
+                <button @click="setFee(HIGH_FEE)" :class="state.sendFee == HIGH_FEE ? 'btn-active':''" class="btn w-1/3">
+                    <label class="normal-case">{{$t('account.high')}}</label>
+                    <label class="normal-case">{{HIGH_FEE}}uinns</label>
+                </button>
+            </div>
+            <button @click="sendOperator()" class="btn btn-outline mt-20 width-90">{{$t('account.send')}}</button>
+            <!-- send result modal -->
+            <input type="checkbox" id="send-result-modal" class="modal-toggle"  v-model="state.sendResultModal"/>
+            <div class="modal modal-bottom sm:modal-middle">
+                <div class="modal-box">
+                <h3 class="font-bold text-lg text-center">{{ $t('transaction') }}</h3>
+                <div style="word-wrap: break-word;word-break: break-all;"  class="py-4 text-center text-sm whitespace-pre-wrap"> {{ state.transactionMsg }}</div>
+                <div class="modal-action">
+                    <label for="send-result-modal" class="btn w-full	capitalize">{{ $t('close') }}</label>
+                </div>
+                </div>
+            </div>
+        </div>
+        <!-- withdraw  -->
+        <div v-if="state.dialogIndex == WITHDRAW"  class="w-96 pt-16">
+            <div class="w-full text-center  pt-8 pb-4 text-xl font-bold">{{ $t('navbar.title') }}</div>
+            <div class="card bg-zinc-800 shadow-xl image-full" style="width: 90%; margin-left: 5%;">
+                <div class="card-body ">
+                    <div class="w-full text-center  pt-2 pb-4 text-lg font-bold">
+                        <div class="mr-2">{{$t('account.rewards')}}</div>
+                        <label>{{state.delegateUinns}} UINNS</label>
+                    </div>
+                </div>
+            </div>
+            <div class="w-full pl-8 pt-4 pb-2 text-lg font-bold">{{ $t('account.operator') }}</div>
+            <input v-model="state.operatorAddress"  style="outline: none;" type="text" paceholder="" class="input input-bordered width-90" />
+            <div class="w-full pl-8 pt-4 pb-2 text-lg font-bold">{{ $t('account.memo') }}</div>
+            <input v-model="state.sendMemo"  style="outline: none;" type="text" paceholder="" class="input input-bordered width-90" />    
+            <div class="w-full pl-8 pt-4 pb-2 text-lg font-bold">{{ $t('account.fee') }}</div>
+            <div class="width-90 btn-group">
+                <button @click="setFee(LOW_FEE)" :class="state.sendFee == LOW_FEE ? 'btn-active':''" class="btn w-1/3">
+                    <label class="normal-case">{{$t('account.low')}}</label>
+                    <label class="normal-case">{{LOW_FEE}}uinns</label>
+                </button>
+                <button @click="setFee(MIDDLE_FEE)" :class="state.sendFee == MIDDLE_FEE ? 'btn-active':''" class="btn w-1/3">
+                    <label class="normal-case">{{$t('account.average')}}</label>
+                    <label class="normal-case">{{MIDDLE_FEE}}uinns</label>
+                </button>
+                <button @click="setFee(HIGH_FEE)" :class="state.sendFee == HIGH_FEE ? 'btn-active':''" class="btn w-1/3">
+                    <label class="normal-case">{{$t('account.high')}}</label>
+                    <label class="normal-case">{{HIGH_FEE}}uinns</label>
+                </button>
+            </div>
+            <button @click="withdrawRewards()" class="btn btn-outline mt-20 width-90">{{$t('account.send')}}</button>
+            <!-- send result modal -->
+            <input type="checkbox" id="send-result-modal" class="modal-toggle"  v-model="state.sendResultModal"/>
+            <div class="modal modal-bottom sm:modal-middle">
+                <div class="modal-box">
+                <h3 class="font-bold text-lg text-center">{{ $t('transaction') }}</h3>
+                <div style="word-wrap: break-word;word-break: break-all;"  class="py-4 text-center text-sm whitespace-pre-wrap"> {{ state.transactionMsg }}</div>
+                <div class="modal-action">
+                    <label for="send-result-modal" class="btn w-full	capitalize">{{ $t('close') }}</label>
+                </div>
+                </div>
+            </div>
+        </div>
         <!-- loading -->
         <loading style="background-color: #00000045;" v-model:active="state.sendLoading"
                  :can-cancel="false"
@@ -233,12 +319,13 @@
     </div>
 </template>
 <script setup lang="ts">
-import {reactive,ref,onMounted} from "vue";
+import {reactive,ref,onMounted,watch} from "vue";
 import cryptoJS from 'crypto-js';
 import { MnemonicDB } from  '../utils/mnemonicdb'
 import { PasswordDB } from  '../utils/passworddb'
-import { Random, Bip39, DirectSecp256k1HdWallet,SigningCosmWasmClient} from "cosmwasm";
+import { Random, Bip39, DirectSecp256k1HdWallet,SigningCosmWasmClient,CosmWasmClient} from "cosmwasm";
 import {StargateClient} from "@cosmjs/stargate"
+import axios from "axios"
 import type {StdFee} from "cosmwasm";
 import useClipboard from "vue-clipboard3";
 import Loading from "vue-loading-overlay";
@@ -246,6 +333,7 @@ import 'vue-loading-overlay/dist/css/index.css';
 
 export interface State {
   endpoint:string
+  lcdUrl:string,
   dialogIndex: number
   mnemonic:string
   mnemonicRandom:Array<string>
@@ -262,8 +350,10 @@ export interface State {
   needToDeleteId:number,
   currentAddress:string,
   availableUinns:string,
+  delegateUinns:string,
   stakedUinns:string,
   recipientAddress:string,
+  operatorAddress:string,
   sendAmount:number,
   sendMemo:string,
   sendFee:number,
@@ -272,6 +362,7 @@ export interface State {
   sendLoading:boolean,
   wordsType:number;
   deleteModal:boolean,
+  rewards:Array<any>
 }
 defineExpose({
     async home(){
@@ -300,8 +391,12 @@ const UNLOCK = 5
 const ACCOUNT_LIST = 6
 const ACCOUNT_DETAIL = 7
 const SEND = 8
+const STAKE = 9
+const UNSTAKE = 10
+const WITHDRAW= 11
 const initialState: State = {
     endpoint:'https://rpc.inns.fun',
+    lcdUrl:'https://rest.inns.fun/cosmos',
     dialogIndex: UNLOCK,
     mnemonic:"",
     mnemonicRandom:[],
@@ -318,8 +413,10 @@ const initialState: State = {
     needToDeleteId:-1,
     currentAddress:'',
     availableUinns:'0',
+    delegateUinns:'0',
     stakedUinns:'0',
     recipientAddress:'',
+    operatorAddress:'',
     sendAmount:0,
     sendMemo:'',
     sendFee:LOW_FEE,
@@ -327,7 +424,8 @@ const initialState: State = {
     transactionMsg:'',
     sendLoading:false,
     wordsType:0,
-    deleteModal:false
+    deleteModal:false,
+    rewards:[]
 }
 const mnemonicExist = reactive(
     Array(24).fill({
@@ -342,6 +440,19 @@ const setIndex = (index: number) => {
 }
 const setMnemonic = (mnemonic: string) => {
   state.mnemonic = mnemonic;
+}
+watch(
+    () => state.currentAddress,
+    (newVal, oldVal) => {
+        showAccountAddr()
+    }
+)
+const emit = defineEmits<{
+  (e:"showAccountAddr",p:string):void
+}>()
+
+function showAccountAddr(){
+  emit("showAccountAddr",state.currentAddress)
 }
 async function unlock() {
     if (state.password.length < 8 ){
@@ -539,6 +650,23 @@ async function loadAccount(address:string){
         state.stakedUinns = '0'
     }
 }
+
+async function loadRewards(address:string){
+    try {
+        const response = await axios.get(`${state.lcdUrl}/distribution/v1beta1/delegators/${address}/rewards`);
+        const data = response.data;
+        state.rewards = data.rewards
+        for(var i=0; i<data.total.length; i++){
+            if(data.total[i].denom == 'uinns'){
+                state.delegateUinns = data.total[0].amount.replace(/0+$/, "")
+                break
+            }
+        }
+    } catch (error) {
+        console.error("Error querying user rewards:", error);
+    }
+}
+
 async function deleteAccount(){
     const db = new MnemonicDB()
     await db.del(state.needToDeleteId)
@@ -585,7 +713,85 @@ async function sendCoin(){
         }
     ]
     try{
-        const txResponse = await client.sendTokens(state.currentAddress, state.recipientAddress, amount, fee)
+        const txResponse = await client.sendTokens(state.currentAddress, state.recipientAddress, amount, fee,state.sendMemo)
+        console.log(txResponse)
+        state.sendResultModal = true
+        if(txResponse.code == 0){
+            state.transactionMsg = "Transaction success\r\n GasUsed:" + txResponse.gasUsed + "uinns\r\n Transaction hash: \r\n"+ txResponse.transactionHash
+        }else{
+            state.transactionMsg = txResponse.rawLog || 'Unknown Error'
+        }
+    }catch(e:any){
+        state.sendResultModal = true
+        state.transactionMsg = e.message
+    }finally{
+        state.sendLoading = false
+    }
+}
+async function sendOperator() {
+    state.sendLoading = true
+    var mnemonic = ''
+    for(var i=0; i<state.accounts.length; i++){
+        if(state.accounts[i].choose){
+            mnemonic = decryptMnemonic(state.password, state.accounts[i].mnemonic,state.accounts[i].iv)
+            break;
+        }
+    }
+    const wallet = await DirectSecp256k1HdWallet.fromMnemonic(mnemonic, {prefix: "inns"})
+    const client = await SigningCosmWasmClient.connectWithSigner(state.endpoint, wallet);
+    const fee : StdFee = {
+        amount:[{
+            denom: 'uinns',
+            amount: state.sendFee.toString()
+        }],
+        gas:state.sendFee.toString()
+    }
+    const amount = {
+        denom:'uinns', 
+        amount:state.sendAmount.toString()
+    }
+    try{
+        let txResponse:any;
+        if(state.dialogIndex == STAKE){
+            txResponse = await client.delegateTokens(state.currentAddress, state.operatorAddress, amount, fee,state.sendMemo)
+        }
+        if(state.dialogIndex == UNSTAKE){
+            txResponse = await client.undelegateTokens(state.currentAddress, state.operatorAddress, amount, fee,state.sendMemo)
+        }
+        console.log(txResponse)
+        state.sendResultModal = true
+        if(txResponse.code == 0){
+            state.transactionMsg = "Transaction success\r\n GasUsed:" + txResponse.gasUsed + "uinns\r\n Transaction hash: \r\n"+ txResponse.transactionHash
+        }else{
+            state.transactionMsg = txResponse.rawLog || 'Unknown Error'
+        }
+    }catch(e:any){
+        state.sendResultModal = true
+        state.transactionMsg = e.message
+    }finally{
+        state.sendLoading = false
+    }
+}
+async function withdrawRewards(){
+    state.sendLoading = true
+    var mnemonic = ''
+    for(var i=0; i<state.accounts.length; i++){
+        if(state.accounts[i].choose){
+            mnemonic = decryptMnemonic(state.password, state.accounts[i].mnemonic,state.accounts[i].iv)
+            break;
+        }
+    }
+    const wallet = await DirectSecp256k1HdWallet.fromMnemonic(mnemonic, {prefix: "inns"})
+    const client = await SigningCosmWasmClient.connectWithSigner(state.endpoint, wallet);
+    const fee : StdFee = {
+        amount:[{
+            denom: 'uinns',
+            amount: state.sendFee.toString()
+        }],
+        gas:state.sendFee.toString()
+    }
+    try{
+        const txResponse = await client.withdrawRewards(state.currentAddress, state.operatorAddress,fee,state.sendMemo)
         console.log(txResponse)
         state.sendResultModal = true
         if(txResponse.code == 0){

@@ -11,7 +11,8 @@
         "portfolio": "我的",
         "mint": "铸造",
         "keplr": "Keprl钱包",
-        "inns": "Inns钱包"
+        "inns": "Inns钱包",
+        "info":"解除质押需要等待30天"
     },
     "account": {
         "create_new_account": "创建新账户",
@@ -60,6 +61,11 @@
         "average":"中等",
         "high":"高",
         "add":"添加",
-        "transaction":"交易"
+        "transaction":"交易",
+        "stake":"质押",
+        "unstake":"解除质押",
+        "operator":"验证器地址",
+        "withdraw":"提取质押奖励",
+        "rewards":"可提取奖励"
     }
 }
